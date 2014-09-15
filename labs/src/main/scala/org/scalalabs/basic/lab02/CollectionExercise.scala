@@ -33,7 +33,37 @@ object CollectionExercise01 {
    *
    */
   def googleCodeJamGooglerese(lines: String*): Seq[String] = {
-    error("fix me")
+    lines.map{_.map{translateChar(_)}}
+  }
+
+  def translateChar(c: Char) = c match {
+    case 'a' => 'y'
+    case 'b' => 'h'
+    case 'c' => 'e'
+    case 'd' => 's'
+    case 'e' => 'o'
+    case 'f' => 'c'
+    case 'g' => 'v'
+    case 'h' => 'x'
+    case 'i' => 'd'
+    case 'j' => 'u'
+    case 'k' => 'i'
+    case 'l' => 'g'
+    case 'm' => 'l'
+    case 'n' => 'b'
+    case 'o' => 'k'
+    case 'p' => 'r'
+    case 'q' => 'z'
+    case 'r' => 't'
+    case 's' => 'n'
+    case 't' => 'w'
+    case 'u' => 'j'
+    case 'v' => 'p'
+    case 'w' => 'f'
+    case 'x' => 'm'
+    case 'y' => 'a'
+    case 'z' => 'q'
+    case a   => a
   }
 }
 /*========================================================== */
@@ -50,7 +80,7 @@ object CollectionExercise02 {
    * using a functional approach.
    */
   def groupAdultsPerAgeGroup(persons: Seq[Person]): Map[Int, Seq[Person]] = {
-    error("fix me")
+    persons.filter{_.age >= 18}.sortBy{_.name}.groupBy{_.age / 10 * 10}
   }
 }
 
@@ -65,7 +95,7 @@ object CollectionExercise03 {
    * checkValuesIncrease(Seq(1,2,2)) == false
    */
   def checkValuesIncrease[T <% Ordered[T]](seq: Seq[T]): Boolean =
-    error("fix me")
+    (seq zip seq.tail).foldLeft(true){(bool, pair) => pair._2 > pair._1 && bool}
 
 }
 /*========================================================== */
@@ -76,6 +106,6 @@ object CollectionExercise04 {
    * To keep it simple it's ok to use String.split to extract all words of a sentence.
    */
   def calcLengthLongestWord(lines: String*): Int = {
-    error("fix me")
+    lines.foldLeft(List.empty[String]){_ ++ _.split(' ')}.map(_.length).max
   }
 }
