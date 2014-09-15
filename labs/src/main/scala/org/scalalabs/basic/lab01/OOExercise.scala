@@ -11,7 +11,7 @@ import scala.language.implicitConversions
  * - Create a class Euro
  * - Provide it with two constructor parameters: euro:Int, cents:Int
  * - Provide the cents field with default value: 0
- * - Provide an immutable field named: inCents that converts euro + cents into cents.
+ * - Provide an immutable field named: fromCents that converts euro + cents into cents.
  * - Create an object Euro with a factory method named: fromCents that creates an Euro based on cents.
  * - Create a method named: + to the Euro class that adds another Euro
  * - Create a method named: * to the Euro class that multiplies an Euro by an integer
@@ -32,7 +32,7 @@ import scala.language.implicitConversions
  * OPTIONAL: Exercise 4:
  * - Provide an implicit class that adds a *(euro:Euro) method to Int
  * - Create a new currency Dollar
- * - Provide a implicit conversion method that converts from Euro to Dollar using the 
+ * - Provide a implicit conversion method that converts from Dollar to Euro using the 
  *   [[org.scalalabs.basic.lab01.DefaultCurrencyConverter]]
  * 
  * OPTIONAL: Exercise 5:
@@ -40,6 +40,35 @@ import scala.language.implicitConversions
  *   of type [[org.scalalabs.basic.lab01.CurrencyConverter]]
  * - Use the implicit CurrencyConverter to do the conversion. 
  */
-class Euro {
+class Euro (val euro:Int, val cents:Int = 0) extends Currency("EUR") with Ordered[Euro] {
+	val inCents = euro * 100 + cents
+
+	def +(that:Euro):Euro = Euro.fromCents(this.inCents + that.inCents)
+	def *(factor:Int):Euro = Euro.fromCents(this.inCents * factor)
+	def compare(that:Euro):Int = this.inCents - that.inCents
+
+	override def toString():String = {
+		if (cents != 0) f"$symbol: $euro,$cents%02d"
+		else f"$symbol: $euro,--"
+	}
+}
+
+object Euro {
+	def fromCents(cents:Int):Euro = new Euro(cents / 100, cents % 100)
+
+	implicit def dollarConversion(dollar:Dollar)(implicit converter:CurrencyConverter):Euro = {
+		fromCents(converter.toEuroCents(dollar.inCents))
+	}
+	implicit class intWithTimes (val multiplier:Int) {
+		def *(euro:Euro) = euro * multiplier
+	}
+
+}
+
+class Dollar (val dollar:Int, val cents:Int = 0) extends Currency("USD") {
+	val inCents = dollar * 100 + cents
+}
+
+abstract class Currency (val symbol:String) {
 
 }
