@@ -29,7 +29,11 @@ object RecursionPatternMatchingExercise {
    * checkValuesIncrease(Seq(1,2,2)) == false
    */
   def checkValuesIncrease(seq: Seq[Int]): Boolean = {
-    error("fix me")
+    seq match {
+      case a::b::c => b > a && checkValuesIncrease(b::c)
+      case Seq(a, b) => b > a
+      case _ => true
+    }
   }
   
   /**
@@ -37,7 +41,13 @@ object RecursionPatternMatchingExercise {
    * List(1,1,2,3,1,1) -> List(1,1), List(2), List(3), List(1,1)
    */
   def groupConsecutive[T](in: List[T]): List[List[T]] = {
-    error("fix me")
+    in match {
+      case a::_ => {
+        val (consec, remains) = in.span(_ == a)
+        consec +: groupConsecutive(remains)
+      }
+      case _ => List.empty[List[T]]
+    }
   }
 
   /**
@@ -45,7 +55,13 @@ object RecursionPatternMatchingExercise {
    * List(1,1,2,3,1,1) -> List(1,1,1,1), List(2), List(3)
    */
   def groupEquals[T](in: List[T]): List[List[T]] = {
-    error("fix me")
+    in match {
+      case a::_ => {
+        val (equal, remains) = in.partition(_ == a)
+        equal +: groupEquals(remains)
+      }
+      case _ => List.empty[List[T]]
+    }
   }
 
   /**
@@ -53,7 +69,16 @@ object RecursionPatternMatchingExercise {
    * List(1,1,2,3,1,1) -> List(1,2,3)
    */
   def compress[T](in: List[T]): List[T] = {
-    error("fix me")
+    // Note: the tests claim "remove consecutive duplicates", which is
+    // different from the above example. We're doing the above, removing
+    // all duplicates.
+    in match {
+      case a::_ => {
+        val (equal, remains) = in.partition(_ == a)
+        a +: compress(remains)
+      }
+      case _ => List.empty[T]
+    }
   }
   
   /**
@@ -61,7 +86,13 @@ object RecursionPatternMatchingExercise {
    * List(1,1,2,3,1,1) -> List((4,1),(1,2),(1,3))
    */
   def amountEqualMembers[T](in: List[T]): List[(Int, T)] = {
-    error("fix me")
+    in match {
+      case a::_ => {
+        val (equal, remains) = in.partition(_ == a)
+        (equal.length, a) +: amountEqualMembers(remains)
+      }
+      case _ => List.empty[(Int,T)]
+    }
   }
   
   /**
@@ -69,7 +100,14 @@ object RecursionPatternMatchingExercise {
    * List(List(1,2,3), List('A, 'B, 'C), List('a, 'b, 'c)) -> List(List(1, 'A, 'a), List(2, 'B, 'b), List(3, 'C, 'c))
    */
   def zipMultiple(in: List[List[_]]): List[List[_]] = {
-    error("fix me")
+    in match {
+      case List(f::rest) => List(f) +: zipMultiple(List(rest))
+      case (f::rest)::others => {
+        val othersZipped = zipMultiple(others)
+        (f +: othersZipped.head) +: zipMultiple(rest +: zipMultiple(othersZipped.tail))
+      }
+      case _ => List.empty[List[_]]
+    }
   }
 
   /**
@@ -77,7 +115,25 @@ object RecursionPatternMatchingExercise {
    * List(List(1), List('A, 'B, 'C), List('a, 'b)) -> List(List(1, 'A, 'a))
    */
   def zipMultipleWithDifferentSize(in: List[List[_]]): List[List[_]] = {
-    error("fix me")
+    // zipMultiple(in.map{_.take(in.map{_.length}.min)})
+
+      in match {
+      case List(f::rest) => List(f) +: zipMultiple(List(rest))
+      case (f::rest)::others => {
+        zipMultipleWithDifferentSize(others) match {
+          case othersHead::othersTail => {
+            (f +: othersHead) +: {
+              zipMultiple(othersTail) match {
+                case Nil => List.empty[List[_]]
+                case tail => zipMultipleWithDifferentSize(rest +: tail)
+              }
+            }
+          }
+          case _ => List.empty[List[_]]
+        }
+      }
+      case _ => List.empty[List[_]]
+    }
   }
 
 }
