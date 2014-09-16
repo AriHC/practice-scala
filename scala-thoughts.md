@@ -30,14 +30,14 @@ without using any higher-order functions gets messy fast.
 It's nice that there are several different valid syntaxes, so you can choose
 the one that looks best for whatever operation you are trying to do (whether it
 is to make a DSL, make use of OOP, or write intentionally obfuscated
-one-liners[^fn-Mstyle])
+one-liners*)
 
 The designers probably included all of these syntaxes because they are
 academics, so they were vulnerable to "Oh wait! What if it could also be
 written this way?" more than anyone else. Also, they probably wanted to attract
 a large number of users with different backgrounds to their language.
 
-[^fn-Mstyle]: Melissa O'Neill-style
+*Melissa O'Neill-style
 
 ### Language design choices that make us sad
 We don't like companion objects in general. We mostly don't like them because
